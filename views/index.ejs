@@ -6,7 +6,16 @@
 
   <div class="twits content">
     <h2>All twits</h2>
-    
+    <% if (twits.length > 0) {%>
+      <% twits.forEach( function(twit) { %>
+        <a class="single" href="/alltwits/<%- twit._id %>">
+          <h3 class="title"><%= twit.title  %></h3>
+          <p class="snippet"><%= twit.body %></p>
+        </a>
+      <%})%>
+    <% } else {%>
+      <p>There is no twit to display...</p>
+    <% } %>
   </div>
 
   <%- include("./partials/footer.ejs") %>
