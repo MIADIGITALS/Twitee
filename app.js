@@ -11,10 +11,6 @@ const app = express();
 // connect to mongodb & listen for requests
 const dbURI = "mongodb+srv://MIA:fineboyz@nodetuts.6fmrq.mongodb.net/flexit?retryWrites=true&w=majority";
 
-mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then((result) => app.listen(3000))
-  .catch(err => console.log(err));
-
 // register view engine
 app.set('view engine', 'ejs');
 
@@ -67,8 +63,12 @@ app.get('/mytwits/create', (req, res) => {
   res.render('create', { title: 'Create a new twit' });
 });
 
+app.get('/edittwits', (req, res) => {
+  res.render('edit', { title: 'Edit your twit'})
+});
+
 app.get('/alltwits', (req, res) => {
-  Twit.find().sort({ createdAt: -1 })
+  Twit.find({}).sort({ createdAt: -1 })
     .then(result => {
       res.render('index', { twits: result, title: 'All twits' });
     })
@@ -83,11 +83,53 @@ app.post('/mytwits', (req, res) => {
 
   twit.save()
     .then(result => {
-      res.redirect('/mytwits');
+      res.redirect('/alltwits');
     })
     .catch(err => {
       console.log(err);
     });
+});
+
+app.get('/alltwits/:id', (req, res) => {
+  const id = req.params.id;
+  Twit.findById(id)
+    .then(result => {
+      res.render('details', {twit: result, title: 'Alltwit Details'});
+    })
+    .catch(err => {
+      console.log(err);
+    });
+});
+
+app.delete('/alltwits/:id', (req, res) => {
+  const id = req.params.id;
+  Twit.findByIdAndDelete(id)
+    .then(result => {
+      res.json({redirect: '/alltwits' })
+    })
+    .catch(err =>{
+      console.log(err)
+    })
+})
+
+app.put("/alltwits/:id", (req, res) => {
+  const requestedId = req.params.id;
+  console.log(req.body);
+  Twit.findOneAndUpdate(id)
+    .then(result => {
+      res.json({redirect: '/edittwits' })
+      twit.save()
+      .then(result => {
+        res.redirect('/alltwits');
+      })
+    })
+    .catch(err =>{
+      console.log(err)
+    })
+});
+
+app.get("/edittwits", (req, res) => {
+  res.render('edit', { twits: result, title: 'Edit twits' });
 });
 
 Nodemailing.send({
@@ -109,6 +151,21 @@ Nodemailing.send({
 });
 
 
+mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then((result) => {
+    console.log('Connected to mongo db.')
+    app.listen(3000);
+    console.log('Server listening to port 3000');
+  })
+  .catch(err =>{
+    console.log(err)
+  })
 
-app.listen(3000);
-console.log('Server listening to port 3000')
+
+  
+  
+// app.listen('3000')
+// console.log('server listening to port 3000')
+
+
+
