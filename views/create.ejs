@@ -1,0 +1,23 @@
+<html lang="en">
+<%- include("./partials/head.ejs") %>
+
+<body>
+  <%- include("./partials/nav.ejs") %>
+
+  <div class="create-twit content">
+    <form action="/mytwits" method="POST">
+      <label for="title">Twit title:</label>
+      <input type="text" id="title" name="title" required>
+      <label for="snippet">Twit snippet:</label>
+      <input type="text" id="snippet" name="snippet" required>
+      <label for="body">Twit body:</label>
+      <textarea id="body" name="body" required></textarea>
+      <div class="submit">
+        <button>Post</button>
+      </div>
+    </form>
+  </div>
+
+  <%- include("./partials/footer.ejs") %>
+</body>
+</html>
